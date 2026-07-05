@@ -4,6 +4,7 @@
 //
 //  Created by Dan Zabinski on 6/30/26.
 //
+import Foundation
 
 public final class Logger {
     public private(set) var cycles: [PointCycle] = []
@@ -12,7 +13,7 @@ public final class Logger {
     public init() {}
 
     public func log(roll: DiceRoll, phase: GamePhase, winLoss: Int) {
-        let point = {
+        let point: Int? = {
             if case .point(let p) = phase { return p }
             return nil
         }()

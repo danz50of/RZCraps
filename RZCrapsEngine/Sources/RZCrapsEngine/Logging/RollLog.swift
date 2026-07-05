@@ -4,6 +4,7 @@
 //
 //  Created by Dan Zabinski on 6/30/26.
 //
+import Foundation
 
 public struct RollLog {
     public let roll: DiceRoll
