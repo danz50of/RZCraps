@@ -16,6 +16,8 @@ public final class OddsEngine {
             switch bet.type {
             case .passLine:
                 totalWin += resolvePassLine(bet: bet, roll: roll, point: point)
+            case .dontPass:
+                totalWin += resolveDontPass(bet: bet, roll: roll, point: point)
             case .odds:
                 totalWin += resolveOdds(bet: bet, roll: roll, point: point)
             case .place:
@@ -37,6 +39,18 @@ public final class OddsEngine {
             if roll.total == 7 { return -bet.amount }
         }
         return 0
+    }
+
+    private func resolveDontPass(bet: Bet, roll: DiceRoll, point: Int?) -> Int {
+        if point == nil {
+            if roll.total == 7 || roll.total == 11 { return -bet.amount }
+            if roll.total == 2 || roll.total == 3 { return bet.amount }
+            return 0 // 12 is bar-12: push; 4,5,6,8,9,10 establish the point, no resolution yet
+        } else {
+            if roll.total == 7 { return bet.amount }
+            if roll.total == point { return -bet.amount }
+            return 0
+        }
     }
 
     private func resolveOdds(bet: Bet, roll: DiceRoll, point: Int?) -> Int {

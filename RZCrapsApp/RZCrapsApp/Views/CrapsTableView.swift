@@ -11,19 +11,36 @@ struct CrapsTableView: View {
     @EnvironmentObject var viewModel: CrapsViewModel
 
     var body: some View {
-        VStack(spacing: 30) {
+        HStack(spacing: 20) {
+            RollLogView(rolls: viewModel.currentCycleRolls)
 
-            Text("Phase: \(phaseText(viewModel.phase))")
-                .font(.title2)
-                .padding(.top)
+            VStack(spacing: 30) {
+                Text("Phase: \(phaseText(viewModel.phase))")
+                    .font(.title2)
+                    .padding(.top)
 
-            DiceView(roll: viewModel.lastRoll)
+                DiceView(roll: viewModel.lastRoll)
 
-            BankrollView(bankroll: viewModel.bankroll)
+                BankrollView(bankroll: viewModel.bankroll)
 
-            ControlsView()
+                ControlsView()
+            }
+            .padding()
         }
         .padding()
+        .alert(item: $viewModel.pendingResolution) { summary in
+            Alert(
+                title: Text(summary.title),
+                message: Text(rollSummaryText(summary.rolls)),
+                dismissButton: .default(Text("OK")) {
+                    viewModel.acknowledgeResolution()
+                }
+            )
+        }
+    }
+
+    private func rollSummaryText(_ rolls: [RollLog]) -> String {
+        rolls.map { "\($0.roll.total)" }.joined(separator: " → ")
     }
 
     private func phaseText(_ phase: GamePhase) -> String {

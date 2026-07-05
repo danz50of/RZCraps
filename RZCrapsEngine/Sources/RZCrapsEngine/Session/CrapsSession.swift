@@ -44,6 +44,16 @@ public final class CrapsSession {
         return true
     }
 
+    public func placeDontPass(units: Int) -> Bool {
+        let amount = unitScaling.amountForPassLine(units: units)
+        guard bankrollManager.canAfford(units: amount) else { return false }
+
+        let bet = Bet(type: .dontPass, number: nil, units: units, amount: amount)
+        betManager.place(bet)
+        bankrollManager.applyWinLoss(unitsDelta: -amount)
+        return true
+    }
+
     public func placeOdds(onPoint point: Int, passLineAmount: Int) -> Bool {
         let maxOdds = unitScaling.maxOddsAmount(forPassLineAmount: passLineAmount)
         guard bankrollManager.canAfford(units: maxOdds) else { return false }
@@ -79,6 +89,7 @@ public final class CrapsSession {
     public func roll() -> DiceRoll {
         let roll = diceService.roll()
         let previousPhase = gameState.phase
+        let outcome = classifyDecision(previousPhase: previousPhase, roll: roll)
 
         gameState.applyRoll(roll)
 
@@ -95,15 +106,17 @@ public final class CrapsSession {
 
         bankrollManager.applyWinLoss(unitsDelta: winLossAmount)
 
-        logger.log(
-            roll: roll,
-            phase: previousPhase,
-            winLoss: winLossAmount
-        )
+        logger.log(roll: roll, outcome: outcome, winLoss: winLossAmount)
 
-        // Clear resolved bets on seven-out or point hit
-        if roll.total == 7 || (point != nil && roll.total == point) {
+        if outcome.isResolution {
             betManager.clearAll()
+        }
+
+        switch outcome {
+        case .pointMade, .sevenOut:
+            lastResolution = outcome
+        default:
+            lastResolution = nil
         }
 
         return roll
@@ -114,9 +127,23 @@ public final class CrapsSession {
     public func resetSession(initialUnits: Int = 1000) {
         bankrollManager.reset(to: initialUnits)
         betManager.clearAll()
+        lastResolution = nil
     }
 
     // MARK: - Accessors
+
+    public private(set) var lastResolution: DecisionOutcome?
+
+    public var hasActiveLineBet: Bool {
+        betManager.activeBets.contains { $0.type == .passLine || $0.type == .dontPass }
+    }
+
+    public var canRoll: Bool {
+        switch gameState.phase {
+        case .comeOut: return hasActiveLineBet
+        case .point: return true
+        }
+    }
 
     public var currentPhase: GamePhase {
         gameState.phase
@@ -128,5 +155,9 @@ public final class CrapsSession {
 
     public var logCycles: [PointCycle] {
         logger.cycles
+    }
+
+    public var currentCycleInProgress: PointCycle? {
+        logger.inProgressCycle
     }
 }

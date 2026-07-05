@@ -11,5 +11,6 @@ public struct RollLog {
     public let phase: GamePhase
     public let point: Int?
     public let winLoss: Int
+    public let outcome: DecisionOutcome
     public let timestamp: Date
 }

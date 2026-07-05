@@ -12,31 +12,34 @@ public final class Logger {
 
     public init() {}
 
-    public func log(roll: DiceRoll, phase: GamePhase, winLoss: Int) {
-        let point: Int? = {
-            if case .point(let p) = phase { return p }
-            return nil
-        }()
+    public var inProgressCycle: PointCycle? {
+        currentCycle
+    }
 
-        let entry = RollLog(
-            roll: roll,
-            phase: phase,
-            point: point,
-            winLoss: winLoss,
-            timestamp: Date()
-        )
+    public func log(roll: DiceRoll, outcome: DecisionOutcome, winLoss: Int) {
+        let timestamp = Date()
 
-        if let p = point {
-            if currentCycle == nil || currentCycle?.point != p {
-                currentCycle = PointCycle(point: p)
-            }
+        switch outcome {
+        case .pointEstablished(let point):
+            var cycle = PointCycle(point: point)
+            let entry = RollLog(roll: roll, phase: .point(point), point: point, winLoss: winLoss, outcome: outcome, timestamp: timestamp)
+            cycle.rolls.append(entry)
+            currentCycle = cycle
+
+        case .pointCycleContinues:
+            guard let point = currentCycle?.point else { return }
+            let entry = RollLog(roll: roll, phase: .point(point), point: point, winLoss: winLoss, outcome: outcome, timestamp: timestamp)
             currentCycle?.rolls.append(entry)
-        }
 
-        if roll.total == 7 || (point != nil && roll.total == point) {
+        case .pointMade(let point), .sevenOut(let point):
+            let entry = RollLog(roll: roll, phase: .point(point), point: point, winLoss: winLoss, outcome: outcome, timestamp: timestamp)
+            currentCycle?.rolls.append(entry)
             if let cycle = currentCycle {
                 cycles.append(cycle)
             }
+            currentCycle = nil
+
+        case .comeOutNatural, .comeOutCraps:
             currentCycle = nil
         }
     }

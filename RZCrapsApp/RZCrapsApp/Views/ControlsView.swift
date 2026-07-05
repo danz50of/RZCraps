@@ -16,6 +16,7 @@ struct ControlsView: View {
                 viewModel.rollDice()
             }
             .buttonStyle(.borderedProminent)
+            .disabled(!viewModel.canRoll)
 
             Divider().padding(.vertical)
 
@@ -23,6 +24,13 @@ struct ControlsView: View {
                 viewModel.placePassLine()
             }
             .buttonStyle(.bordered)
+            .disabled(viewModel.hasActiveLineBet)
+
+            Button("Don't Pass (1 unit)") {
+                viewModel.placeDontPass()
+            }
+            .buttonStyle(.bordered)
+            .disabled(viewModel.hasActiveLineBet)
 
             HStack {
                 Button("Place 6") { viewModel.placePlaceBet(number: 6) }
