@@ -35,6 +35,25 @@ Running log of manual test findings, used to drive the next engineering iteratio
 
 ---
 
+## Session: 2026-07-05 - Manual 1
+
+**Build:**  0.3.10.20260705
+**Tester:**  DZ - Reviewing initial state after claude completion
+
+| # | Area | Test ID | Steps to Reproduce | Expected | Actual | Severity | Status | Notes |
+|---|------|---------|---------------------|----------|--------|----------|--------|-------|
+| 01  | Betting     |  0001       |  place 1 unit betting.  Point established.  Point won.   | Should win 1 unit, plus receive additional unit back.  started at 980, bet 1 unit went to 975, won point, only receved 1 unit back, ending balance 980    expected 985     |  ending unit was 980      |  High   | Open | Confirmed this bug exists on the don't pass winning also.  It appears there is no payout logic, only receiving your bet back.  This might be best to look at in rev 5      |
+| 02  | Betting     |  0002       | Can only place a 1 unit bet. place a pass or don't pass bet, only 1 unit allowed         | Should be able to add additional units until the dice are rolled for pass or don't pass        | button greys out after selection       |  High       |  Open      |      |
+| 03  |      |   |   |   |   |    |      |   | 
+| 04  |      |   |   |   |   |    |      |   | 
+| 05  |      |   |   |   |   |    |      |   | 
+| 06  |      |   |   |   |   |    |      |   | 
+| 07  |      |   |   |   |   |    |      |   | 
+| 08  |      |   |   |   |   |    |      |   | 
+| 09  |      |   |   |   |   |    |      |   | 
+| 10  |      |   |   |   |   |    |      |   | 
+---
+
 ## Session: _(next testing date)_
 
 **Build:**
@@ -43,6 +62,7 @@ Running log of manual test findings, used to drive the next engineering iteratio
 | # | Area | Test ID | Steps to Reproduce | Expected | Actual | Severity | Status | Notes |
 |---|------|---------|---------------------|----------|--------|----------|--------|-------|
 |   |      |         |                     |          |        |          |        |       |
+
 
 ---
 
