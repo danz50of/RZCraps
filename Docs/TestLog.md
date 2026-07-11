@@ -44,7 +44,7 @@ Running log of manual test findings, used to drive the next engineering iteratio
 |---|------|---------|---------------------|----------|--------|----------|--------|-------|
 | 01  | Betting     |  0001       |  place 1 unit betting.  Point established.  Point won.   | Should win 1 unit, plus receive additional unit back.  started at 980, bet 1 unit went to 975, won point, only receved 1 unit back, ending balance 980    expected 985     |  ending unit was 980      |  High   | Open | Confirmed this bug exists on the don't pass winning also.  It appears there is no payout logic, only receiving your bet back.  This might be best to look at in rev 5      |
 | 02  | Betting     |  0002       | Can only place a 1 unit bet. place a pass or don't pass bet, only 1 unit allowed         | Should be able to add additional units until the dice are rolled for pass or don't pass        | button greys out after selection       |  High       |  Open      |      |
-| 03  |      |   |   |   |   |    |      |   | 
+| 03  | Betting | 0003   | When you loose, you are not only loosing the money you placed in the bet, you are also loosing the same amount from your chip total   |    |   |    |      |   | 
 | 04  |      |   |   |   |   |    |      |   | 
 | 05  |      |   |   |   |   |    |      |   | 
 | 06  |      |   |   |   |   |    |      |   | 
